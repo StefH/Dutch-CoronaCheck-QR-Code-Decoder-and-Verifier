@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DutchCoronaCheckUtils\DutchCoronaCheckUtils.csproj" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <PackageReference Include="asn1sharp" Version="1.0.0" />
+    <PackageReference Include="Base45Utility" Version="1.2.0" />
+    <PackageReference Include="Com.AugustCellars.COSE" Version="1.7.0" />
+    <PackageReference Include="PeNet.Asn1" Version="1.6.1" />
+    <PackageReference Include="PeterO.Cbor" Version="4.4.4" />
+    <PackageReference Include="SharpZipLib" Version="1.3.3" />
+    <PackageReference Include="SimpleBase" Version="3.1.0" />
+    <PackageReference Include="System.Formats.Asn1" Version="5.0.0" />
+  </ItemGroup>-->
+
+</Project>
