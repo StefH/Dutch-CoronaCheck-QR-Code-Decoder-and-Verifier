@@ -2,7 +2,7 @@ namespace DutchCoronaCheckUtils.Models
 {
     public class SecurityAspect
     {
-        public Metadata? Metadata { get; set; } = null!;
+        public CredentialMetadataSerialization? Metadata { get; set; } = null!;
 
         /// <summary>
         /// Indicates whether we're dealing with a demo or sample ("1"), or with a live one ("0").

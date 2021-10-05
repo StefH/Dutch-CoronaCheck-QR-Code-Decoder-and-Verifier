@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Numerics;
 using System.Text;
@@ -9,8 +8,8 @@ namespace DutchCoronaCheckUtils
 {
     public static class DutchCoronaCheckASN1Utils
     {
-        private const byte Version = 2;
-        private const string PublicKey = "VWS-CC-2";
+        private const byte CredentialVersion = 2;
+        private const string IssuerPkId = "VWS-CC-2";
 
         private static BigInteger ReadAsBigInteger(this Asn1Node node, bool isUnsigned = false, bool isBigEndian = true)
         {
@@ -42,8 +41,8 @@ namespace DutchCoronaCheckUtils
             var ADisclosed = new Asn1Sequence();
 
             var metadata = new Asn1Sequence();
-            metadata.Nodes.Add(new Asn1OctetString(new[] { structure.ADisclosed?.Metadata?.Version ?? Version }));
-            metadata.Nodes.Add(Asn1PrintableString.ReadFrom(new MemoryStream(Encoding.UTF8.GetBytes(structure.ADisclosed?.Metadata?.PublicKey ?? PublicKey))));
+            metadata.Nodes.Add(new Asn1OctetString(new[] { structure.ADisclosed?.Metadata?.CredentialVersion ?? CredentialVersion }));
+            metadata.Nodes.Add(Asn1PrintableString.ReadFrom(new MemoryStream(Encoding.UTF8.GetBytes(structure.ADisclosed?.Metadata?.IssuerPkId ?? IssuerPkId))));
 
             ADisclosed.Nodes.Add(new Asn1Integer(EncodeData(new BigInteger(metadata.GetBytes(), false, true)).ToByteArray(false, true)));
             ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.IsSpecimen).ToByteArray(false, true)));
@@ -80,7 +79,7 @@ namespace DutchCoronaCheckUtils
 
             topLevelStructure.ADisclosed = new SecurityAspect
             {
-                Metadata = ParseMetadata(ReadAsBigInteger(ADisclosed[0])),
+                Metadata = DecodeMetadata(ReadAsBigInteger(ADisclosed[0])),
                 IsSpecimen = DecodeStringData(ReadAsBigInteger(ADisclosed[1])),
                 IsPaperProof = DecodeStringData(ReadAsBigInteger(ADisclosed[2])),
                 ValidFrom = DecodeStringData(ReadAsBigInteger(ADisclosed[3])),
@@ -94,7 +93,7 @@ namespace DutchCoronaCheckUtils
             return topLevelStructure;
         }
 
-        private static Metadata? ParseMetadata(BigInteger metadataInteger)
+        private static CredentialMetadataSerialization? DecodeMetadata(BigInteger metadataInteger)
         {
             var data = DecodeData(metadataInteger);
             if (data is null)
@@ -104,10 +103,10 @@ namespace DutchCoronaCheckUtils
 
             var metadataSequence = ((Asn1Sequence)Asn1Node.ReadNode(data.Value.ToByteArray(false, true))).Nodes;
 
-            return new Metadata
+            return new CredentialMetadataSerialization
             {
-                Version = metadataSequence[0].ReadAsOctetString()[0],
-                PublicKey = metadataSequence[1].ReadAsPrintableString(),
+                CredentialVersion = metadataSequence[0].ReadAsOctetString()[0],
+                IssuerPkId = metadataSequence[1].ReadAsPrintableString(),
             };
         }
 

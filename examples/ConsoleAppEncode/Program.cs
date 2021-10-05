@@ -2,6 +2,7 @@ using System;
 using System.Text.Json;
 using ConsoleAppDecode;
 using DutchCoronaCheckUtils;
+using QRCodeEncoderLibrary;
 
 namespace ConsoleAppEncode
 {
@@ -45,6 +46,10 @@ namespace ConsoleAppEncode
             var json = JsonSerializer.Serialize(DutchCoronaCheckASN1Utils.Read(DutchCoronaCheckBase45Utils.Decode(qrCodeDataNew[4..])), options);
 
             Console.WriteLine(json);
+
+            var encoder = new QRCodeEncoder();
+            encoder.Encode(qrCodeDataNew);
+            encoder.SaveQRCodeToPngFile(@"c:\tmp\qrCodeDataNew.png");
         }
 
         private static void EncodeTestReal()
@@ -55,7 +60,7 @@ namespace ConsoleAppEncode
 
             var topLevelStructure = DutchCoronaCheckASN1Utils.Read(base45Decoded);
 
-            topLevelStructure.ADisclosed.FirstNameInitial = "X";
+            topLevelStructure.ADisclosed.FirstNameInitial = "N";
             var data = DutchCoronaCheckASN1Utils.Write(topLevelStructure);
 
             var base45Encoded = DutchCoronaCheckBase45Utils.Encode(data);
@@ -70,6 +75,10 @@ namespace ConsoleAppEncode
             var json = JsonSerializer.Serialize(DutchCoronaCheckASN1Utils.Read(DutchCoronaCheckBase45Utils.Decode(qrCodeDataNew[4..])), options);
 
             Console.WriteLine(json);
+
+            var encoder = new QRCodeEncoder();
+            encoder.Encode(qrCodeDataNew);
+            encoder.SaveQRCodeToPngFile(@"c:\tmp\qrCodeDataNewReal.png");
         }
     }
 }

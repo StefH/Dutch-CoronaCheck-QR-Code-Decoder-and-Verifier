@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="QRCodeEncoder" Version="0.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\DutchCoronaCheckUtils\DutchCoronaCheckUtils.csproj" />
   </ItemGroup>
 

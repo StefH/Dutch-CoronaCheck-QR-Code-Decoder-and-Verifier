@@ -40,7 +40,7 @@ namespace DutchCoronaCheckUtils
             return topLevelStructure;
         }
 
-        private static Metadata? ParseMetadata(BigInteger metadataInteger)
+        private static CredentialMetadataSerialization? ParseMetadata(BigInteger metadataInteger)
         {
             var data = GetData(metadataInteger);
             if (data is null)
@@ -51,10 +51,10 @@ namespace DutchCoronaCheckUtils
             var metadataReader = new AsnReader(data.Value.ToByteArray(false, true), AsnEncodingRules.BER);
             var metadataSequence = metadataReader.ReadSequence();
 
-            return new Metadata
+            return new CredentialMetadataSerialization
             {
-                Version = metadataSequence.ReadOctetString()[0],
-                PublicKey = metadataSequence.ReadCharacterString(UniversalTagNumber.PrintableString)
+                CredentialVersion = metadataSequence.ReadOctetString()[0],
+                IssuerPkId = metadataSequence.ReadCharacterString(UniversalTagNumber.PrintableString)
             };
         }
 
