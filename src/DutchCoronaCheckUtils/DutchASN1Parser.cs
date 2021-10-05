@@ -7,7 +7,7 @@ namespace DutchCoronaCheckUtils
 {
     public static class DutchASN1Parser
     {
-        public static TopLevelStructure Parse(byte[] base45Decoded)
+        public static TopLevelStructure Read(byte[] base45Decoded)
         {
             var reader = new AsnReader(base45Decoded, AsnEncodingRules.BER);
             var document = reader.ReadSequence();

@@ -6,7 +6,7 @@ namespace DutchCoronaCheckUtils
 {
     public static class DutchASN1ParserAsn1DecoderNet5
     {
-        public static TopLevelStructure Parse(byte[] base45Decoded)
+        public static TopLevelStructure Read(byte[] base45Decoded)
         {
             var topLevelStructure = new TopLevelStructure();
             var tag = Asn1DecoderNet5.Decoder.Decode(base45Decoded);

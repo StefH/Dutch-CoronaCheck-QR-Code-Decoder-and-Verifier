@@ -16,6 +16,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DutchCoronaCheckUtils", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleAppDecode", "examples\ConsoleApp1\ConsoleAppDecode.csproj", "{891B93FD-99A1-4B2C-9D2F-FCC4A070CE0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppEncode", "examples\ConsoleAppEncode\ConsoleAppEncode.csproj", "{F418BB57-9358-48F9-A9D0-86A81E163C30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{891B93FD-99A1-4B2C-9D2F-FCC4A070CE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{891B93FD-99A1-4B2C-9D2F-FCC4A070CE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{891B93FD-99A1-4B2C-9D2F-FCC4A070CE0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F418BB57-9358-48F9-A9D0-86A81E163C30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F418BB57-9358-48F9-A9D0-86A81E163C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F418BB57-9358-48F9-A9D0-86A81E163C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F418BB57-9358-48F9-A9D0-86A81E163C30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{21E3FFC9-50AC-4B90-8271-EA09E855A054} = {B600ECC3-80AA-43BF-B053-E16BA6F472DB}
 		{891B93FD-99A1-4B2C-9D2F-FCC4A070CE0C} = {BB4B9D78-D27F-4200-81B0-5F254D02AAF6}
+		{F418BB57-9358-48F9-A9D0-86A81E163C30} = {BB4B9D78-D27F-4200-81B0-5F254D02AAF6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1CB2021A-24B6-47C6-8578-67B2003009AA}

@@ -19,7 +19,7 @@ namespace DutchCoronaCheckUtils
     ///         res += f * w
     ///     return res.to_bytes((res.bit_length() + 7) // 8, byteorder='big') 
     /// </summary>
-    public static class DutchBase45
+    public static class DutchCoronaCheckBase45Utils
     {
         const int BaseSize = 45;
 

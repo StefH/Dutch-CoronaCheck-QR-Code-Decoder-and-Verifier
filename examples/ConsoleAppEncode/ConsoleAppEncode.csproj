@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ConsoleApp1\BigIntegerJsonConverter.cs" Link="BigIntegerJsonConverter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DutchCoronaCheckUtils\DutchCoronaCheckUtils.csproj" />
+  </ItemGroup>
+
+</Project>
