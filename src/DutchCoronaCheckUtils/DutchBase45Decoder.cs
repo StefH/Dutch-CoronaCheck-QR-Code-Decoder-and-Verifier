@@ -25,16 +25,16 @@ namespace DutchCoronaCheckUtils
         {
             var stringLength = inputString.Length;
 
-            BigInteger res = 0;
+            BigInteger result = 0;
             foreach (var item in inputString.Select((ch, index) => new { index, ch }))
             {
                 var location = base45DutchCharset.IndexOf(item.ch);
                 var value = BigInteger.Pow(45, stringLength - item.index - 1);
 
-                res += location * value;
+                result += location * value;
             }
 
-            return res.ToByteArray(false, true);
+            return result.ToByteArray(false, true);
         }
     }
 }

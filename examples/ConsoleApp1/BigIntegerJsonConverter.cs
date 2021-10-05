@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ConsoleApp1
+namespace ConsoleAppDecode
 {
     /// <summary>
     /// See https://stackoverflow.com/questions/64788895/serialising-biginteger-using-system-text-json

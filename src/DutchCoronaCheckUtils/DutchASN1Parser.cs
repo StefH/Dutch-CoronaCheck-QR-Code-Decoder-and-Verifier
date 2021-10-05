@@ -24,11 +24,9 @@ namespace DutchCoronaCheckUtils
 
             var ADisclosed = document.ReadSequence();
 
-            var metadata = ParseMetadata(ADisclosed.ReadInteger());
-
             topLevelStructure.ADisclosed = new SecurityAspect
             {
-                Metadata = metadata,
+                Metadata = ParseMetadata(ADisclosed.ReadInteger()),
                 IsSpecimen = GetStringData(ADisclosed.ReadInteger()),
                 IsPaperProof = GetStringData(ADisclosed.ReadInteger()),
                 ValidFrom = GetStringData(ADisclosed.ReadInteger()),

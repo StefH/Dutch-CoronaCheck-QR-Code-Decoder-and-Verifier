@@ -8,6 +8,7 @@ Based on this [blog - Decoding the Dutch domestic CoronaCheck QR code](https://w
 ## Steps
 
 ### 1. Get QR Code data
+
 Use a library to decode a QR Code image to data : https://github.com/StefH/QRCode
 
 ![overview](https://github.com/StefH/Dutch-CoronaCheck-QR-Code-Decoder-and-Verifier/blob/main/resources/qr.png)
@@ -24,7 +25,6 @@ Make sure to skip the first 4 characters.
 var base45Decoded = DutchBase45Decoder.Decode(qrCodeData.Substring(4));
 ```
 
-
 ### 3. Decode the Base45 string using an ASN1 decoder
 
 ``` c#
@@ -32,18 +32,19 @@ var topLevelStructure = DutchASN1Parser.Parse(base45Decoded);
 ```
 
 ### 4. Print the info as json
+
 Note that you need a specfic BigIntegerJsonConverter to show the BigInteger value correctly.
 
 ``` c#
 var options = new JsonSerializerOptions
 {
-  WriteIndented = true
+    WriteIndented = true
 };
 options.Converters.Add(new BigIntegerJsonConverter());
 var json = JsonSerializer.Serialize(topLevelStructure, options);
 ```
 
-### 5. Details
+### 5. Decoded structure as JSON
 
 ``` json
 {

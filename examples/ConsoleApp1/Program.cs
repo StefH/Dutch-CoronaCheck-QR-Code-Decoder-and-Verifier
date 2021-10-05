@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using DutchCoronaCheckUtils;
 
-namespace ConsoleApp1
+namespace ConsoleAppDecode
 {
     class Program
     {
@@ -24,17 +24,24 @@ namespace ConsoleApp1
 
         private static void DecodeReal()
         {
-            var qrCodeData = Environment.GetEnvironmentVariable("QR");
-            Console.WriteLine(qrCodeData);
+            try
+            {
+                var qrCodeData = Environment.GetEnvironmentVariable("QR");
+                Console.WriteLine(qrCodeData);
 
-            Decode(qrCodeData);
+                Decode(qrCodeData);
+            }
+            catch
+            {
+                //
+            }
         }
 
         private static void Decode(string qrCodeData)
         {
             var base45Decoded = DutchBase45Decoder.Decode(qrCodeData.Substring(4));
 
-            var topLevelStructure = DutchASN1Parser.Parse(base45Decoded);
+            var topLevelStructure = DutchASN1ParserPeNet.Parse(base45Decoded);
 
             var options = new JsonSerializerOptions
             {

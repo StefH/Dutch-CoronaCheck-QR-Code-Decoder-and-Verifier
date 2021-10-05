@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{BB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DutchCoronaCheckUtils", "src\DutchCoronaCheckUtils\DutchCoronaCheckUtils.csproj", "{21E3FFC9-50AC-4B90-8271-EA09E855A054}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "examples\ConsoleApp1\ConsoleApp1.csproj", "{891B93FD-99A1-4B2C-9D2F-FCC4A070CE0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleAppDecode", "examples\ConsoleApp1\ConsoleAppDecode.csproj", "{891B93FD-99A1-4B2C-9D2F-FCC4A070CE0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
