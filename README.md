@@ -22,7 +22,7 @@ var qrCodeData = "NL2:B4V.W9D:LWJ5W2S6A$XQ9N* Y252O4%%  ZNK**$840VPY8T7$J0GR$8L2
 Make sure to skip the first 4 characters.
 
 ``` c#
-var base45Decoded = DutchBase45Decoder.Decode(qrCodeData.Substring(4));
+var base45Decoded = DutchBase45.Decode(qrCodeData.Substring(4));
 ```
 
 ### 3. Decode the Base45 string using an ASN1 decoder
