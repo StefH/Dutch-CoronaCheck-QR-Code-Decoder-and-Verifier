@@ -26,37 +26,12 @@ namespace DutchCoronaCheckUtils
             return ((Asn1PrintableString)node).Value;
         }
 
-        public static byte[] Write(TopLevelStructure structure)
+        /// <summary>
+        /// Write the bytes in a big-endian byte order.
+        /// </summary>
+        private static byte[] ToBigEndianByteArray(this BigInteger value)
         {
-            var node = new Asn1Sequence();
-
-            var document = node.Nodes;
-            document.Add(new Asn1Integer(structure.DisclosureTimeSeconds.ToByteArray(false, true)));
-            document.Add(new Asn1Integer(structure.C.ToByteArray(false, true)));
-            document.Add(new Asn1Integer(structure.A.ToByteArray(false, true)));
-            document.Add(new Asn1Integer(structure.EResponse.ToByteArray(false, true)));
-            document.Add(new Asn1Integer(structure.VResponse.ToByteArray(false, true)));
-            document.Add(new Asn1Integer(structure.AResponse.ToByteArray(false, true)));
-
-            var ADisclosed = new Asn1Sequence();
-
-            var metadata = new Asn1Sequence();
-            metadata.Nodes.Add(new Asn1OctetString(new[] { structure.ADisclosed?.Metadata?.CredentialVersion ?? CredentialVersion }));
-            metadata.Nodes.Add(Asn1PrintableString.ReadFrom(new MemoryStream(Encoding.UTF8.GetBytes(structure.ADisclosed?.Metadata?.IssuerPkId ?? IssuerPkId))));
-
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeData(new BigInteger(metadata.GetBytes(), false, true)).ToByteArray(false, true)));
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.IsSpecimen).ToByteArray(false, true)));
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.IsPaperProof).ToByteArray(false, true)));
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.ValidFrom).ToByteArray(false, true)));
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.ValidForHours).ToByteArray(false, true)));
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.FirstNameInitial).ToByteArray(false, true)));
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.LastNameInitial).ToByteArray(false, true)));
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.BirthDay).ToByteArray(false, true)));
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.BirthMonth).ToByteArray(false, true)));
-
-            document.Add(ADisclosed);
-
-            return node.GetBytes();
+            return value.ToByteArray(false, true);
         }
 
         public static TopLevelStructure Read(byte[] base45Decoded)
@@ -93,6 +68,39 @@ namespace DutchCoronaCheckUtils
             return topLevelStructure;
         }
 
+        public static byte[] Write(TopLevelStructure structure)
+        {
+            var node = new Asn1Sequence();
+
+            var document = node.Nodes;
+            document.Add(new Asn1Integer(structure.DisclosureTimeSeconds.ToBigEndianByteArray()));
+            document.Add(new Asn1Integer(structure.C.ToBigEndianByteArray()));
+            document.Add(new Asn1Integer(structure.A.ToBigEndianByteArray()));
+            document.Add(new Asn1Integer(structure.EResponse.ToBigEndianByteArray()));
+            document.Add(new Asn1Integer(structure.VResponse.ToBigEndianByteArray()));
+            document.Add(new Asn1Integer(structure.AResponse.ToBigEndianByteArray()));
+
+            var ADisclosed = new Asn1Sequence();
+
+            var metadata = new Asn1Sequence();
+            metadata.Nodes.Add(new Asn1OctetString(new[] { structure.ADisclosed?.Metadata?.CredentialVersion ?? CredentialVersion }));
+            metadata.Nodes.Add(Asn1PrintableString.ReadFrom(new MemoryStream(Encoding.UTF8.GetBytes(structure.ADisclosed?.Metadata?.IssuerPkId ?? IssuerPkId))));
+
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeData(new BigInteger(metadata.GetBytes(), false, true)).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.IsSpecimen).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.IsPaperProof).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.ValidFrom).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.ValidForHours).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.FirstNameInitial).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.LastNameInitial).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.BirthDay).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.BirthMonth).ToBigEndianByteArray()));
+
+            document.Add(ADisclosed);
+
+            return node.GetBytes();
+        }
+
         private static CredentialMetadataSerialization? DecodeMetadata(BigInteger metadataInteger)
         {
             var data = DecodeData(metadataInteger);
@@ -101,25 +109,13 @@ namespace DutchCoronaCheckUtils
                 return null;
             }
 
-            var metadataSequence = ((Asn1Sequence)Asn1Node.ReadNode(data.Value.ToByteArray(false, true))).Nodes;
+            var metadataSequence = ((Asn1Sequence)Asn1Node.ReadNode(data.Value.ToBigEndianByteArray())).Nodes;
 
             return new CredentialMetadataSerialization
             {
                 CredentialVersion = metadataSequence[0].ReadAsOctetString()[0],
                 IssuerPkId = metadataSequence[1].ReadAsPrintableString(),
             };
-        }
-
-        private static string? DecodeStringData(BigInteger value)
-        {
-            var data = DecodeData(value);
-            if (data is null)
-            {
-                return null;
-            }
-
-            // Decode as UTF-8 string
-            return Encoding.UTF8.GetString(data.Value.ToByteArray(false, true));
         }
 
         private static BigInteger? DecodeData(BigInteger value)
@@ -134,16 +130,16 @@ namespace DutchCoronaCheckUtils
             return value >> 1;
         }
 
-        private static BigInteger EncodeStringData(string? value)
+        private static string? DecodeStringData(BigInteger value)
         {
-            if (value == null)
+            var data = DecodeData(value);
+            if (data is null)
             {
-                return 0;
+                return null;
             }
 
-            var data = new BigInteger(Encoding.UTF8.GetBytes(value), false, true);
-
-            return EncodeData(data);
+            // Decode as UTF-8 string
+            return Encoding.UTF8.GetString(data.Value.ToBigEndianByteArray());
         }
 
         private static BigInteger EncodeData(BigInteger? value)
@@ -158,6 +154,18 @@ namespace DutchCoronaCheckUtils
 
             // east significant bit acting as data flag
             return data | 1;
+        }
+
+        private static BigInteger EncodeStringData(string? value)
+        {
+            if (value == null)
+            {
+                return 0;
+            }
+
+            var data = new BigInteger(Encoding.UTF8.GetBytes(value), false, true);
+
+            return EncodeData(data);
         }
     }
 }
