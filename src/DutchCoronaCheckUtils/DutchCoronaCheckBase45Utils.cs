@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using DutchCoronaCheckUtils.Extensions;
 
 namespace DutchCoronaCheckUtils
 {
@@ -44,12 +45,12 @@ namespace DutchCoronaCheckUtils
                 result += location * value;
             }
 
-            return result.ToByteArray(false, true);
+            return result.ToBigEndianByteArray();
         }
 
         public static string Encode(byte[] srcBytes)
         {
-            var source = new BigInteger(srcBytes, false, true);
+            var source = srcBytes.ToBigEndianInteger();
 
             int log = (int)BigInteger.Log(source, BaseSize);
             var stringBuilder = new StringBuilder(log + 1);

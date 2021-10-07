@@ -1,6 +1,7 @@
 using System.IO;
 using System.Numerics;
 using System.Text;
+using DutchCoronaCheckUtils.Extensions;
 using DutchCoronaCheckUtils.Models;
 using PeNet.Asn1;
 
@@ -11,9 +12,9 @@ namespace DutchCoronaCheckUtils
         private const byte CredentialVersion = 2;
         private const string IssuerPkId = "VWS-CC-2";
 
-        private static BigInteger ReadAsBigInteger(this Asn1Node node, bool isUnsigned = false, bool isBigEndian = true)
+        private static BigInteger ReadAsBigInteger(this Asn1Node node)
         {
-            return new BigInteger(((Asn1Integer)node).Value, isUnsigned, isBigEndian);
+            return ((Asn1Integer)node).Value.ToBigEndianInteger();
         }
 
         private static byte[] ReadAsOctetString(this Asn1Node node)
@@ -25,15 +26,7 @@ namespace DutchCoronaCheckUtils
         {
             return ((Asn1PrintableString)node).Value;
         }
-
-        /// <summary>
-        /// Write the bytes in a big-endian byte order.
-        /// </summary>
-        private static byte[] ToBigEndianByteArray(this BigInteger value)
-        {
-            return value.ToByteArray(false, true);
-        }
-
+                
         public static TopLevelStructure Read(byte[] base45Decoded)
         {
             var node = (Asn1Sequence)Asn1Node.ReadNode(base45Decoded);
@@ -86,7 +79,7 @@ namespace DutchCoronaCheckUtils
             metadata.Nodes.Add(new Asn1OctetString(new[] { structure.ADisclosed?.Metadata?.CredentialVersion ?? CredentialVersion }));
             metadata.Nodes.Add(Asn1PrintableString.ReadFrom(new MemoryStream(Encoding.UTF8.GetBytes(structure.ADisclosed?.Metadata?.IssuerPkId ?? IssuerPkId))));
 
-            ADisclosed.Nodes.Add(new Asn1Integer(EncodeData(new BigInteger(metadata.GetBytes(), false, true)).ToBigEndianByteArray()));
+            ADisclosed.Nodes.Add(new Asn1Integer(EncodeData(metadata.GetBytes().ToBigEndianInteger()).ToBigEndianByteArray()));
             ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.IsSpecimen).ToBigEndianByteArray()));
             ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.IsPaperProof).ToBigEndianByteArray()));
             ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.ValidFrom).ToBigEndianByteArray()));
