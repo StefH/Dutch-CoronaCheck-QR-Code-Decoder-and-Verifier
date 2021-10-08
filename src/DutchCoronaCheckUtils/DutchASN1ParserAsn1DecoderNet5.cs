@@ -6,9 +6,9 @@ namespace DutchCoronaCheckUtils
 {
     public static class DutchASN1ParserAsn1DecoderNet5
     {
-        public static TopLevelStructure Read(byte[] base45Decoded)
+        public static ProofSerializationV2 Read(byte[] base45Decoded)
         {
-            var topLevelStructure = new TopLevelStructure();
+            var proofSerializationV2 = new ProofSerializationV2();
             var tag = Asn1DecoderNet5.Decoder.Decode(base45Decoded);
 
             //var reader = new AsnReader(base45Decoded, AsnEncodingRules.BER);
@@ -28,7 +28,7 @@ namespace DutchCoronaCheckUtils
 
             //var metadata = ParseMetadata(ADisclosed.ReadInteger());
 
-            topLevelStructure.ADisclosed = new SecurityAspect
+            proofSerializationV2.ADisclosed = new SecurityAspect
             {
                 //Metadata = metadata,
                 //IsSpecimen = GetStringData(ADisclosed.ReadInteger()),
@@ -41,7 +41,7 @@ namespace DutchCoronaCheckUtils
                 BirthMonth = GetStringData(new BigInteger(ADisclosed[8].Content, false, true))
             };
 
-            return topLevelStructure;
+            return proofSerializationV2;
         }
 
         //private static Metadata? ParseMetadata(BigInteger metadataInteger)

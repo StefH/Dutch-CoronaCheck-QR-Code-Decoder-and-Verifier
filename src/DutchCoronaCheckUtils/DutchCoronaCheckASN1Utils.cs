@@ -27,13 +27,13 @@ namespace DutchCoronaCheckUtils
             return ((Asn1PrintableString)node).Value;
         }
                 
-        public static TopLevelStructure Read(byte[] base45Decoded)
+        public static ProofSerializationV2 Read(byte[] base45Decoded)
         {
             var node = (Asn1Sequence)Asn1Node.ReadNode(base45Decoded);
 
             var document = node.Nodes;
 
-            var topLevelStructure = new TopLevelStructure
+            var proofSerializationV2 = new ProofSerializationV2
             {
                 DisclosureTimeSeconds = ReadAsBigInteger(document[0]),
                 C = ReadAsBigInteger(document[1]),
@@ -45,7 +45,7 @@ namespace DutchCoronaCheckUtils
 
             var ADisclosed = ((Asn1Sequence)document[6]).Nodes;
 
-            topLevelStructure.ADisclosed = new SecurityAspect
+            proofSerializationV2.ADisclosed = new SecurityAspect
             {
                 Metadata = DecodeMetadata(ReadAsBigInteger(ADisclosed[0])),
                 IsSpecimen = DecodeStringData(ReadAsBigInteger(ADisclosed[1])),
@@ -58,10 +58,10 @@ namespace DutchCoronaCheckUtils
                 BirthMonth = DecodeStringData(ReadAsBigInteger(ADisclosed[8]))
             };
 
-            return topLevelStructure;
+            return proofSerializationV2;
         }
 
-        public static byte[] Write(TopLevelStructure structure)
+        public static byte[] Write(ProofSerializationV2 structure)
         {
             var node = new Asn1Sequence();
 

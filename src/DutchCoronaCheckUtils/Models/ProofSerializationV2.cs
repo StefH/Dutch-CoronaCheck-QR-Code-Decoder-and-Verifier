@@ -23,7 +23,7 @@ namespace DutchCoronaCheckUtils.Models
     ///     }
     /// END
     /// </summary>
-    public class TopLevelStructure
+    public class ProofSerializationV2
     {
         public BigInteger DisclosureTimeSeconds { get; set; }
         public BigInteger C { get; set; }
