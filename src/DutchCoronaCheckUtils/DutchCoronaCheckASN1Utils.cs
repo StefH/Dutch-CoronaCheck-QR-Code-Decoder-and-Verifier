@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Numerics;
 using System.Text;
@@ -10,7 +11,8 @@ namespace DutchCoronaCheckUtils
     public static class DutchCoronaCheckASN1Utils
     {
         private const byte CredentialVersion = 2;
-        private const string IssuerPkId = "VWS-CC-2";
+        private const string IssuerPkIdV1 = "VWS-CC-1";
+        private const string IssuerPkIdV2 = "VWS-CC-2";
 
         private static BigInteger ReadAsBigInteger(this Asn1Node node)
         {
@@ -26,7 +28,7 @@ namespace DutchCoronaCheckUtils
         {
             return ((Asn1PrintableString)node).Value;
         }
-                
+
         public static ProofSerializationV2 Read(byte[] base45Decoded)
         {
             var node = (Asn1Sequence)Asn1Node.ReadNode(base45Decoded);
@@ -45,9 +47,11 @@ namespace DutchCoronaCheckUtils
 
             var ADisclosed = ((Asn1Sequence)document[6]).Nodes;
 
+            var metaData = DecodeMetadata(ReadAsBigInteger(ADisclosed[0]));
+
             proofSerializationV2.ADisclosed = new SecurityAspect
             {
-                Metadata = DecodeMetadata(ReadAsBigInteger(ADisclosed[0])),
+                Metadata = metaData,
                 IsSpecimen = DecodeStringData(ReadAsBigInteger(ADisclosed[1])),
                 IsPaperProof = DecodeStringData(ReadAsBigInteger(ADisclosed[2])),
                 ValidFrom = DecodeStringData(ReadAsBigInteger(ADisclosed[3])),
@@ -55,7 +59,7 @@ namespace DutchCoronaCheckUtils
                 FirstNameInitial = DecodeStringData(ReadAsBigInteger(ADisclosed[5])),
                 LastNameInitial = DecodeStringData(ReadAsBigInteger(ADisclosed[6])),
                 BirthDay = DecodeStringData(ReadAsBigInteger(ADisclosed[7])),
-                BirthMonth = DecodeStringData(ReadAsBigInteger(ADisclosed[8]))
+                BirthMonth = DecodeBirthMonth(metaData?.IssuerPkId, ReadAsBigInteger(ADisclosed[8]))
             };
 
             return proofSerializationV2;
@@ -63,6 +67,12 @@ namespace DutchCoronaCheckUtils
 
         public static byte[] Write(ProofSerializationV2 structure)
         {
+            var issuerPkId = structure.ADisclosed?.Metadata?.IssuerPkId;
+            if (string.IsNullOrEmpty(issuerPkId) || issuerPkId != IssuerPkIdV2)
+            {
+                throw new NotSupportedException($"Only IssuerPkId with value '{IssuerPkIdV2}' is supported.");
+            }
+
             var node = new Asn1Sequence();
 
             var document = node.Nodes;
@@ -77,7 +87,7 @@ namespace DutchCoronaCheckUtils
 
             var metadata = new Asn1Sequence();
             metadata.Nodes.Add(new Asn1OctetString(new[] { structure.ADisclosed?.Metadata?.CredentialVersion ?? CredentialVersion }));
-            metadata.Nodes.Add(Asn1PrintableString.ReadFrom(new MemoryStream(Encoding.UTF8.GetBytes(structure.ADisclosed?.Metadata?.IssuerPkId ?? IssuerPkId))));
+            metadata.Nodes.Add(Asn1PrintableString.ReadFrom(new MemoryStream(Encoding.UTF8.GetBytes(issuerPkId))));
 
             ADisclosed.Nodes.Add(new Asn1Integer(EncodeData(metadata.GetBytes().ToBigEndianInteger()).ToBigEndianByteArray()));
             ADisclosed.Nodes.Add(new Asn1Integer(EncodeStringData(structure.ADisclosed?.IsSpecimen).ToBigEndianByteArray()));
@@ -92,6 +102,18 @@ namespace DutchCoronaCheckUtils
             document.Add(ADisclosed);
 
             return node.GetBytes();
+        }
+
+        private static string? DecodeBirthMonth(string? issuerPkId, BigInteger value)
+        {
+            switch (issuerPkId)
+            {
+                case IssuerPkIdV1:
+                    return value.ToString(); // Best guess ?
+
+                default:
+                    return DecodeStringData(value);
+            }
         }
 
         private static CredentialMetadataSerialization? DecodeMetadata(BigInteger metadataInteger)
