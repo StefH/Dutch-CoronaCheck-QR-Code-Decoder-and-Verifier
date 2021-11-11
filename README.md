@@ -2,6 +2,9 @@
 
 Based on this [blog - Decoding the Dutch domestic CoronaCheck QR code](https://www.bartwolff.com/Blog/2021/08/21/decoding-the-dutch-domestic-coronacheck-qr-code) I created C# code to decode the Dutch CoronaCheck QR Code.
 
+## Blog
+For a full blog related to QR Codes in general and more details on this project, see [mstack.nl : decoding-coronacheck-qrcode](https://mstack.nl/blog/20211013-decoding-coronacheck-qrcode/).
+
 ## Overview
 ![overview](https://github.com/StefH/Dutch-CoronaCheck-QR-Code-Decoder-and-Verifier/blob/main/resources/overview.png)
 
