@@ -1,10 +1,10 @@
+using DutchCoronaCheckUtils.Extensions;
+using DutchCoronaCheckUtils.Models;
+using PeNet.Asn1;
 using System;
 using System.IO;
 using System.Numerics;
 using System.Text;
-using DutchCoronaCheckUtils.Extensions;
-using DutchCoronaCheckUtils.Models;
-using PeNet.Asn1;
 
 namespace DutchCoronaCheckUtils
 {
@@ -59,7 +59,7 @@ namespace DutchCoronaCheckUtils
                 FirstNameInitial = DecodeStringData(ReadAsBigInteger(ADisclosed[5])),
                 LastNameInitial = DecodeStringData(ReadAsBigInteger(ADisclosed[6])),
                 BirthDay = DecodeStringData(ReadAsBigInteger(ADisclosed[7])),
-                BirthMonth = DecodeBirthMonth(metaData?.IssuerPkId, ReadAsBigInteger(ADisclosed[8]))
+                BirthMonth = DecodeStringData(ReadAsBigInteger(ADisclosed[8]))
             };
 
             return proofSerializationV2;
@@ -104,18 +104,6 @@ namespace DutchCoronaCheckUtils
             return node.GetBytes();
         }
 
-        private static string? DecodeBirthMonth(string? issuerPkId, BigInteger value)
-        {
-            switch (issuerPkId)
-            {
-                case IssuerPkIdV1:
-                    return value.ToString(); // Best guess ?
-
-                default:
-                    return DecodeStringData(value);
-            }
-        }
-
         private static CredentialMetadataSerialization? DecodeMetadata(BigInteger metadataInteger)
         {
             var data = DecodeData(metadataInteger);
@@ -148,7 +136,7 @@ namespace DutchCoronaCheckUtils
         private static string? DecodeStringData(BigInteger value)
         {
             var data = DecodeData(value);
-            if (data is null)
+            if (data is null || data == BigInteger.Zero)
             {
                 return null;
             }

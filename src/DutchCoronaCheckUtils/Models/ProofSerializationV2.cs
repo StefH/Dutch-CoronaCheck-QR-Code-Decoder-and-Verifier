@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 
 namespace DutchCoronaCheckUtils.Models
@@ -26,6 +27,7 @@ namespace DutchCoronaCheckUtils.Models
     public class ProofSerializationV2
     {
         public BigInteger DisclosureTimeSeconds { get; set; }
+        public DateTime? DisclosureTimeAsDateTime => DisclosureTimeSeconds > 0 ? DateTimeOffset.FromUnixTimeSeconds((int) DisclosureTimeSeconds).DateTime : null;
         public BigInteger C { get; set; }
         public BigInteger A { get; set; }
         public BigInteger EResponse { get; set; }

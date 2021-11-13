@@ -1,3 +1,5 @@
+using System;
+
 namespace DutchCoronaCheckUtils.Models
 {
     public class SecurityAspect
@@ -22,6 +24,9 @@ namespace DutchCoronaCheckUtils.Models
         /// even though this really only indicates when the QR has been created.
         /// </summary>
         public string? ValidFrom { get; set; } = null!;
+
+        public DateTime? ValidFromAsDateTime =>
+            !string.IsNullOrEmpty(ValidFrom) && int.TryParse(ValidFrom, out var epochSeconds) ? DateTimeOffset.FromUnixTimeSeconds(epochSeconds).DateTime : null;
 
         /// <summary>
         /// Defines how long the QR is valid for.

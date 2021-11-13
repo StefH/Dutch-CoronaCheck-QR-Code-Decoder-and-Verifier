@@ -47,11 +47,12 @@ options.Converters.Add(new BigIntegerJsonConverter());
 var json = JsonSerializer.Serialize(topLevelStructure, options);
 ```
 
-### 5. Decoded structure as JSON
+### 5a. Decoded structure as JSON
 
 ``` json
 {
   "DisclosureTimeSeconds": 0,
+  "DisclosureTimeAsDateTime": null,
   "C": 8552691641371642315207690017304824071043033037718558536544370073022402689101,
   "A": 49268998317399832353736153768064371574626738522454049754099967437769709104310153609419233826877129804699795832362376712815509777453876457088841057013114352195643598128717108189839059529627445516705110559750713315964799043200407446690141492417247324685581653291574436663012628249066333485906592079172004705549,
   "EResponse": 49545515259154895522776867107959247032241047651980572443481917331143789403307139106555023968391340296360761238102083435099286993359857518,
@@ -59,12 +60,13 @@ var json = JsonSerializer.Serialize(topLevelStructure, options);
   "AResponse": 8995728107811269294519662596375119434427697506197921896277098071616873267360774813635548449786430125954107935654004828703451862806879219403683135630175078760507502448619423267753,
   "ADisclosed": {
     "Metadata": {
-      "Version": 2,
-      "PublicKey": "VWS-CC-2"
+      "CredentialVersion": 2,
+      "IssuerPkId": "VWS-CC-2"
     },
     "IsSpecimen": "1",
     "IsPaperProof": "1",
     "ValidFrom": "1627466400",
+    "ValidFromAsDateTime": "2021-07-28T10:00:00",
     "ValidForHours": "25",
     "FirstNameInitial": "B",
     "LastNameInitial": "B",
@@ -73,3 +75,38 @@ var json = JsonSerializer.Serialize(topLevelStructure, options);
   }
 }
 ```
+
+### 5b. Decoded structure from real QR code (phone)
+``` json
+{
+  "DisclosureTimeSeconds": 1636813015,
+  "DisclosureTimeAsDateTime": "2021-11-13T14:16:55",
+  "C": ⭐,
+  "A": ⭐,
+  "EResponse": ⭐,
+  "VResponse": ⭐,
+  "AResponse": ⭐,
+  "ADisclosed": {
+    "Metadata": {
+      "CredentialVersion": 2,
+      "IssuerPkId": "VWS-CC-1"
+    },
+    "IsSpecimen": "0",
+    "IsPaperProof": "0",
+    "ValidFrom": "1636797600",
+    "ValidFromAsDateTime": "2021-11-13T10:00:00",
+    "ValidForHours": "24",
+    "FirstNameInitial": "⭐",
+    "LastNameInitial": "⭐",
+    "BirthDay": null,
+    "BirthMonth": "⭐"
+  }
+}
+```
+
+##### Differences with the PaperProof version
+- The `DisclosureTimeSeconds` defines the time when this code was generated/displayed on the screen.
+- The `IssuerPkId` version is different
+- The `BirthDay` is null
+- The `ValidForHours` is 24 instead of 25
+- The `ValidFrom` differs 1 hour
