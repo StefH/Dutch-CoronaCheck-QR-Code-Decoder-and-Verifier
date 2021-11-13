@@ -14,7 +14,9 @@ namespace ConsoleAppDecode
             Console.WriteLine(new string('-', 100));
             DecodeExample_VWS_CC_2();
             Console.WriteLine(new string('-', 100));
-            DecodeReal();
+            DecodeRealS();
+            Console.WriteLine(new string('-', 100));
+            DecodeRealC();
         }
 
         private static void DecodeExample_VWS_CC_1()
@@ -46,11 +48,26 @@ namespace ConsoleAppDecode
         }
                
 
-        private static void DecodeReal()
+        private static void DecodeRealS()
         {
             try
             {
-                var qrCodeData = Environment.GetEnvironmentVariable("QR");
+                var qrCodeData = Environment.GetEnvironmentVariable("QR_S_NL");
+                Console.WriteLine(qrCodeData);
+
+                Decode(qrCodeData);
+            }
+            catch
+            {
+                //
+            }
+        }
+
+        private static void DecodeRealC()
+        {
+            try
+            {
+                var qrCodeData = Environment.GetEnvironmentVariable("QR_C_NL");
                 Console.WriteLine(qrCodeData);
 
                 Decode(qrCodeData);
