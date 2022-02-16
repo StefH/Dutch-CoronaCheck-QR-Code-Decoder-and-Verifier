@@ -56,5 +56,11 @@ namespace DutchCoronaCheckUtils.Models
         /// Defines the month of the person's birthday.
         /// </summary>
         public string? BirthMonth { get; set; } = null!;
+
+        /// <summary>
+        /// Defines the category, only for V3.
+        /// "Daarin kan een waarde staan die zegt dat het gaat om een negatieve test."
+        /// </summary>
+        public string? Category { get; set; }
     }
 }

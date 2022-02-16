@@ -10,7 +10,8 @@ namespace DutchCoronaCheckUtils
 {
     public static class DutchCoronaCheckASN1Utils
     {
-        private const byte CredentialVersion = 2;
+        private const byte CredentialVersionV2 = 2;
+        private const byte CredentialVersionV3 = 3;
         private const string IssuerPkIdV1 = "VWS-CC-1";
         private const string IssuerPkIdV2 = "VWS-CC-2";
 
@@ -62,6 +63,11 @@ namespace DutchCoronaCheckUtils
                 BirthMonth = DecodeStringData(ReadAsBigInteger(ADisclosed[8]))
             };
 
+            if (metaData?.CredentialVersion >= CredentialVersionV3)
+            {
+                proofSerializationV2.ADisclosed.Category = DecodeStringData(ReadAsBigInteger(ADisclosed[9]));
+            }
+
             return proofSerializationV2;
         }
 
@@ -86,7 +92,7 @@ namespace DutchCoronaCheckUtils
             var ADisclosed = new Asn1Sequence();
 
             var metadata = new Asn1Sequence();
-            metadata.Nodes.Add(new Asn1OctetString(new[] { structure.ADisclosed?.Metadata?.CredentialVersion ?? CredentialVersion }));
+            metadata.Nodes.Add(new Asn1OctetString(new[] { structure.ADisclosed?.Metadata?.CredentialVersion ?? CredentialVersionV2 }));
             metadata.Nodes.Add(Asn1PrintableString.ReadFrom(new MemoryStream(Encoding.UTF8.GetBytes(issuerPkId))));
 
             ADisclosed.Nodes.Add(new Asn1Integer(EncodeData(metadata.GetBytes().ToBigEndianInteger()).ToBigEndianByteArray()));
